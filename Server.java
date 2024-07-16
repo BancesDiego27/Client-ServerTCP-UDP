@@ -52,12 +52,13 @@ public class Server {
             Socket clientSocket = serverSocket.accept();
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); // Leer lo que escribe el cliente
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true); // Manda mi resultado al cliente
-            System.out.println(clientSocket.getInetAddress().getHostAddress());
+            //System.out.println(clientSocket.getInetAddress().getHostAddress());
             String request = in.readLine(); // La peticion del usuario
             String clientIP = clientSocket.getInetAddress().getHostAddress();
             imprimirMensaje(">", "client", "TCP", "request", request,clientIP);
 
             if (request.equalsIgnoreCase("EXIT")) { // Solo se deberia de cerrar conexion con el cliente si ponen EXIT
+                imprimirMensaje("<", "server", "TCP", "response", "EXIT",clientIP);
                 clientSocket.close();
                 break;
             }
@@ -140,7 +141,7 @@ public class Server {
             InetAddress inetAddress = InetAddress.getLocalHost();
             String localIP = inetAddress.getHostAddress();
             String host = hostType.equals("server") ? localIP : clientIP;
-            String dateTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+            String dateTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
             System.out.println(String.format("[%s] %s %s [%s] %s: %s", direccion, host, hostType, dateTime, protocolo, descripcion + ": " + mensaje));
             
         } catch (Exception e) {
