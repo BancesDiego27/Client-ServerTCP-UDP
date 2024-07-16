@@ -80,11 +80,16 @@ public class Server {
         while (true) {
             DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length); // Recibe la info del cliente 
             socket.receive(receivePacket);
+            String clientIP = receivePacket.getAddress().getHostAddress();
 
             String request = new String(receivePacket.getData(), 0, receivePacket.getLength()); // La peticion del usuario
-            imprimirMensaje(">", "client", "UDP", "request", request, "12");
+          
+            
+            imprimirMensaje(">", "client", "UDP", "request", request, clientIP);
 
-            if (request.equalsIgnoreCase("EXIT")) {  // Solo se deberia de cerrar conexion con el cliente si ponen EXIT
+            if (request.equalsIgnoreCase("EXIT")) {
+                  // Solo se deberia de cerrar conexion con el cliente si ponen EXIT
+                  imprimirMensaje("<", "server", "UDP", "response", "EXIT",clientIP);
                 break;
             }
 
@@ -93,7 +98,7 @@ public class Server {
 
             DatagramPacket sendPacket = new DatagramPacket(sendBuffer, sendBuffer.length, receivePacket.getAddress(), receivePacket.getPort());
             socket.send(sendPacket); // manda al cliente el resultado de la operacion 
-            imprimirMensaje("<", "server", "UDP", "response", response,"12");
+            imprimirMensaje("<", "server", "UDP", "response", response,clientIP);
         }
         socket.close();
     }
