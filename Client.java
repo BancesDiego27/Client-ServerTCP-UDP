@@ -89,6 +89,12 @@ public class Client {
         socket.send(sendPacket);
         imprimirMensaje("<", "client", "UDP", "request", operation);
 
+        if (operation == "EXIT") {
+            imprimirMensaje(">", "server", "UDP", "response", "EXIT");
+            socket.close();
+            return "EXIT";
+        }
+
         byte[] receiveBuffer = new byte[1024];
         DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
         socket.receive(receivePacket);
