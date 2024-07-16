@@ -26,13 +26,11 @@ public class Client {
 
                 if (protocolo.equalsIgnoreCase("TCP")) {
                     conectarTCP(operation);
-                } else if(protocolo.equalsIgnoreCase("UDP")) {
+                } else if (protocolo.equalsIgnoreCase("UDP")) {
                     conectarUDP(operation);
-                }
-                else{
+                } else {
                     System.err.println("Error: Ingrese un Protocolo Valido TCP / UDP");
                 }
-    
 
             } catch (Exception e) {
                 System.err.println("Error: " + e.getMessage());
@@ -42,7 +40,8 @@ public class Client {
     }
 
     private static void parseArguments(String[] args) {
-        protocolo= "TCP"; // Si no trae nada en los argumentos se establecen valores por defecto no se especifican asi que asumire TCP y el puerto 3001
+        protocolo = "TCP"; // Si no trae nada en los argumentos se establecen valores por defecto no se
+                           // especifican asi que asumire TCP y el puerto 3001
         puerto = 3001;
         for (int i = 0; i < args.length; i += 2) {
             String key = args[i];
@@ -66,9 +65,14 @@ public class Client {
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-        out.println(operation);
-        imprimirMensaje("<", "client", "TCP", "request", operation);
+        out.println(operation); // Lo que le mando al server
 
+        imprimirMensaje("<", "client", "TCP", "request", operation);
+        if (operation == "EXIT") {
+            imprimirMensaje(">", "server", "TCP", "response", "EXIT");
+            socket.close();
+            return "EXIT";
+        }
         String response = in.readLine();
         imprimirMensaje(">", "server", "TCP", "response", response);
 
@@ -107,14 +111,16 @@ public class Client {
         }
     }
 
-    private static void imprimirMensaje(String direccion, String hostType, String protocolo, String descripcion, String mensaje) {
+    private static void imprimirMensaje(String direccion, String hostType, String protocolo, String descripcion,
+            String mensaje) {
         try {
             InetAddress inetAddress = InetAddress.getLocalHost();
             String localIP = inetAddress.getHostAddress();
             String host = hostType.equals("client") ? localIP : serverIp;
-            String dateTime = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
-            System.out.println(String.format("[%s] %s %s [%s] %s: %s", direccion, host, hostType, dateTime, protocolo, descripcion + ": " + mensaje));
-            
+            String dateTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+            System.out.println(String.format("[%s] %s %s [%s] %s: %s", direccion, host, hostType, dateTime, protocolo,
+                    descripcion + ": " + mensaje));
+
         } catch (Exception e) {
             // TODO: handle exception
         }
